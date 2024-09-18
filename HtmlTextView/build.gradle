@@ -1,26 +1,69 @@
-apply plugin: 'com.android.library'
-apply plugin: 'bintray-release'
+plugins {
+    id 'com.android.library'
+    id("maven-publish")
+}
+
+group = 'com.koai-dev'
+version = '1.0.0'
 
 android {
-    compileSdkVersion 29
+    compileSdk 34
 
     defaultConfig {
-        minSdkVersion 14
-        targetSdkVersion 29
-        versionName '4.0'
+        minSdkVersion 21
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    publishing {
+        singleVariant('release') {
+            withSourcesJar()
+            withJavadocJar()
+        }
     }
 }
 
-publish {
-    userOrg = 'sufficientlysecure'
-    groupId = 'org.sufficientlysecure'
-    artifactId = 'html-textview'
-    publishVersion = android.defaultConfig.versionName
-    website = 'https://github.com/SufficientlySecure/html-textview'
-    desc = 'HtmlTextView is an extended TextView component for Android, which can load HTML and converts it into Spannable for displaying it.'
+dependencies {
+    implementation "androidx.annotation:annotation-jvm:1.8.2"
 }
 
-dependencies {
-    implementation 'androidx.annotation:annotation:1.1.0'
 
- }
+afterEvaluate{
+    publishing {
+        publications {
+            release(MavenPublication) {
+                groupId = 'com.koai-dev'
+                artifactId = 'html-textview'
+                version = '1.0.0'
+
+                afterEvaluate {
+                    from components.release
+                }
+            }
+        }
+    }
+}
+
+task createReleaseTag {
+    doLast {
+        def tagName = "1.0.0"
+        try {
+            exec {
+                commandLine("git", "tag", "-a", tagName, "-m", "Release tag $tagName")
+            }
+
+            exec {
+                commandLine("git", "push", "origin", tagName)
+            }
+        } catch (e) {
+            println(e.toString())
+        }
+    }
+}
