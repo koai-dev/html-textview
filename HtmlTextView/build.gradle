@@ -4,18 +4,18 @@ plugins {
 }
 
 group = 'com.koai-dev'
-version = '5.0.1'
+version = '5.0.2'
 
 android {
     compileSdk 34
 
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 19
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
     }
 
     buildFeatures {
@@ -41,7 +41,7 @@ afterEvaluate{
             release(MavenPublication) {
                 groupId = 'com.koai-dev'
                 artifactId = 'html-textview'
-                version = '5.0.1'
+                version = '5.0.2'
 
                 afterEvaluate {
                     from components.release
@@ -53,7 +53,7 @@ afterEvaluate{
 
 task createReleaseTag {
     doLast {
-        def tagName = "5.0.1"
+        def tagName = "5.0.2"
         try {
             exec {
                 commandLine("git", "tag", "-a", tagName, "-m", "Release tag $tagName")
